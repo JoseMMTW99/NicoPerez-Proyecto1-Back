@@ -9,8 +9,10 @@ require('./database/db');
 
 const users = require('./routes/users');
 const uploads = require('./routes/uploads');
+const edificio = require('./routes/edificio');
 
 app.use('/users', users);
+app.use('/edificio', edificio);
 app.use('/uploads', uploads);
 
 app.listen(port, () =>  {

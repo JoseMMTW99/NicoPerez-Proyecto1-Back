@@ -1,11 +1,12 @@
 const express = require('express');
 const route = express.Router();
-const { crearUser, getUser, patchUser, deleteUser, getUserEspecifico, loginUser } = require('../controllers/users');
+const { crearUser, getUser, patchUser, deleteUser, getUserEspecifico, loginUser, cambiarContrasena } = require('../controllers/users');
 
 route.get('/obtener-users', getUser);
 route.get('/:id', getUserEspecifico);
 route.post('/crear-user', crearUser)
 route.patch(`/editar-user`, patchUser);
+route.patch(`/cambiar-contrasena`, cambiarContrasena);
 route.delete(`/eliminar-user`, deleteUser);
 route.post(`/login-user`, loginUser);
 

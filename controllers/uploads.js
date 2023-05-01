@@ -24,7 +24,7 @@ const storage = new GridFsStorage({
         filename: file.originalname,
         bucketName: 'uploads',
         metadata: {
-          userId: req.body.userId // Add userId parameter from client side
+          userId: req.body // Add userId parameter from client side
         }
       };
       resolve(fileInfo);
@@ -41,35 +41,36 @@ const uploadFile = (req, res) => {
     if (err) {
       res.status(206).json({ error: err });
     } else {
-      res.status(200).json({ success: true });
+      const fileId = req.file.id;
+      const userId = req.file.metadata.userId;
+      res.status(200).json({ success: true, fileId, userId });
     }
   });
 };
 
 const getPdfs = async (req, res) => {
+  console.log(req.params.userId);
   try {
     const gfs = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
       bucketName: 'uploads'
     });
 
-    const files = await gfs.find({ 'metadata.userId': req.query.userId }).sort({ uploadDate: -1 }).toArray();
+    const files = await gfs.find({ 'metadata.userId.userId': req.params.userId }).sort({ uploadDate: -1 }).toArray();
 
     if (files.length > 0) {
       const file = files[0];
-      res.status(200).json({
-        filename: file.filename,
-        contentType: file.contentType,
-        fileId: file._id.toString()
-      });
+      const stream = gfs.openDownloadStream(file._id);
+      res.set('Content-Type', file.contentType);
+      res.set('Content-Disposition', `attachment; filename=${file.filename}`);
+      stream.pipe(res);
     } else {
-      res.status(206).json({ error: 'No PDFs found' });
+      res.status(206).json({ message: 'No hay ningún comprobante cargado.' });
     }
   } catch (error) {
     console.error(error);
     res.status(206).json({ error: 'Failed to get PDFs' });
   }
 };
-
 
 
 module.exports = { uploadFile, getPdfs };

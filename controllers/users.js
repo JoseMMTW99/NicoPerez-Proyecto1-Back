@@ -28,7 +28,8 @@ const getUserEspecifico = async (req, res) => {
     }
 
 const crearUser = async (req, res) => {
-    const { name, surname, email, password, dni, edificio, piso, puerta, role } = req.body;
+    const { name, surname, email, dni, edificio, piso, puerta } = req.body;
+    const role = 'usuario'
     const userExistentes = await User.findOne({"dni": dni})
     const userExistentesEmail = await User.findOne({"email": email})
     if (userExistentes) {
@@ -40,7 +41,7 @@ const crearUser = async (req, res) => {
             name,
             surname,
             email,
-            password,
+            password: dni,
             dni,
             edificio,
             piso,
@@ -119,7 +120,7 @@ const emailUser = async (req, res) => {
     }
 };
 
-const restablecerContraseña = async (req, res) => {
+const cambiarContrasena = async (req, res) => {
     const { id, password  } = req.body
     await User.findByIdAndUpdate(id, {
         password
@@ -127,4 +128,4 @@ const restablecerContraseña = async (req, res) => {
     res.status(200).send(`Se actualizo su contraseña con éxito.`)
 };
 
-module.exports = { crearUser, getUser, deleteUser, patchUser, getUserEspecifico, loginUser, emailUser, restablecerContraseña }
+module.exports = { crearUser, getUser, deleteUser, patchUser, getUserEspecifico, loginUser, emailUser, cambiarContrasena }
