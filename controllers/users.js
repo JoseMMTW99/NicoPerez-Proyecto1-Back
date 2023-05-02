@@ -28,7 +28,7 @@ const getUserEspecifico = async (req, res) => {
     }
 
 const crearUser = async (req, res) => {
-    const { name, surname, email, dni, edificio, piso, puerta } = req.body;
+    const { name, surname, email, dni, edificio, piso, puerta, tipo, baulera } = req.body;
     const role = 'usuario'
     const userExistentes = await User.findOne({"dni": dni})
     const userExistentesEmail = await User.findOne({"email": email})
@@ -46,6 +46,8 @@ const crearUser = async (req, res) => {
             edificio,
             piso,
             puerta,
+            tipo,
+            baulera,
             role
         })
         await nuevoUser.save()
@@ -65,7 +67,7 @@ const deleteUser = async (req, res) => {
 }
 
 const patchUser = async (req, res) => {
-    const { name, surname, email, password, dni, edificio, piso, puerta, role } = req.body
+    const { name, surname, email, password, dni, edificio, piso, puerta, tipo, baulera, role } = req.body
     await User.findByIdAndUpdate(id, {
         name,
         surname,
@@ -75,6 +77,8 @@ const patchUser = async (req, res) => {
         edificio,
         piso,
         puerta,
+        tipo,
+        baulera,
         role
     })
     res.status(200).send(`Se actualizo el usuario con éxito.`)

@@ -9,6 +9,8 @@ const user = new Schema({
     edificio: String,
     piso: String,
     puerta: String,
+    tipo: String,
+    baulera: String,
     role: String
 })
 
