@@ -1,6 +1,7 @@
 const User = require('../model/users');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const nodemailer = require("nodemailer");
 require('dotenv').config();
 const claveToken = process.env.CLAVE;
 
@@ -132,4 +133,65 @@ const cambiarContrasena = async (req, res) => {
     res.status(200).send(`Se actualizo su contraseña con éxito.`)
 };
 
-module.exports = { crearUser, getUser, deleteUser, patchUser, getUserEspecifico, loginUser, emailUser, cambiarContrasena }
+const recoverPassword = async (req, res) => {
+    try {
+      const { email } = req.body;
+  
+      const user = await User.findOne({"email": email})
+      if (user) {
+            const tokenNormal = jwt.sign({ user }, claveToken, { expiresIn: "1h" })
+            const token = Buffer.from(JSON.stringify(tokenNormal)).toString('base64');
+            let transporter = nodemailer.createTransport({
+                host: "smtp.gmail.com",
+                port: 465,
+                secure: true,
+                auth: {
+                  user: "mateolohezic@gmail.com",
+                  pass: "etuprccqumnjadex",
+                },
+                tls: {
+                    rejectUnauthorized: false
+                  }
+              });
+          
+              let info = await transporter.sendMail({
+                from: '"Mateito" mateolohezic@gmail.com',
+                to: email,
+                subject: "Password Recovery", 
+                html: `<p>Ingrese al siguiente link para recuperar su contraseña:</p><a href='http://127.0.0.1:5173/Recuperar-contrase%C3%B1a/${token}'>Click aquí</a>`,
+              });
+              res.status(200).json("Email sent");
+        } else {
+            res.status(206).send({ message: 'Usuario no encontrado' })
+    }
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+const changePassword = async (req, res) => {
+    try {
+      const { token, password } = req.body;
+  
+    const decodedToken = JSON.parse(Buffer.from(token, 'base64').toString());
+    const { user } = jwt.verify(decodedToken, claveToken);
+    const { _id } = user;
+    await User.findByIdAndUpdate(_id, { 
+        password 
+    });
+  
+    res.status(200).json('Password changed successfully');
+    } catch (error) {
+      console.log(error);
+      if (error.name === 'JsonWebTokenError') {
+        res.status(400).json({ message: 'El enlace es invalido.' });
+      } else if (error.name === 'TokenExpiredError') {
+        res.status(400).json({ message: 'El enlace expiró' });
+      } else {
+        res.status(500).json({ message: 'Error del servidor' });
+      }
+    }
+};
+
+module.exports = { crearUser, getUser, deleteUser, patchUser, getUserEspecifico, loginUser, emailUser, cambiarContrasena, recoverPassword, changePassword }
