@@ -42,7 +42,7 @@ const crearEdificio = async (req, res) => {
 const deleteEdificio = async (req, res) => {
     const { name } = req.body
     if (name) {
-        const edificiooo = await Edificio.findOneAndDelete({ name });
+        await Edificio.findOneAndDelete({ name });
         res.status(200).send(`Se elimino el edificio con éxito.`)
     } else{
         res.status(206).send(`No id.`)

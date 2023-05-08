@@ -118,8 +118,8 @@ const recoverPassword = async (req, res) => {
                 port: 465,
                 secure: true,
                 auth: {
-                  user: "mateolohezic@gmail.com",
-                  pass: "etuprccqumnjadex",
+                  user: "serpasoportedev@gmail.com",
+                  pass: "krrkxvqwiddhajwm",
                 },
                 tls: {
                     rejectUnauthorized: false
@@ -127,10 +127,10 @@ const recoverPassword = async (req, res) => {
               });
           
               let info = await transporter.sendMail({
-                from: '"Mateito" mateolohezic@gmail.com',
+                from: '"Serpa Administración" serpasoportedev@gmail.com',
                 to: email,
-                subject: "Password Recovery", 
-                html: `<p>Ingrese al siguiente link para recuperar su contraseña:</p><a href='http://127.0.0.1:5173/Recuperar-contrase%C3%B1a/${token}'>Click aquí</a>`,
+                subject: "Recuperar contraseña", 
+                html: `<p>Ingrese al siguiente link para recuperar su contraseña:</p><a href='https://serpaadministracion.netlify.app/Recuperar-contrase%C3%B1a/${token}'>Click aquí</a>`,
               });
               res.status(200).json("Email sent");
         } else {
