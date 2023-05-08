@@ -105,34 +105,6 @@ const loginUser = async (req, res) => {
     }
   }
 
-const emailUser = async (req, res) => {
-    const { email } = req.body
-
-    try{
-        const user = await User.findOne({"email": email})
-        if (user) {
-            if (user.role === 'admin' || user.role === 'gold') {
-              res.status(206).send({ message: 'Usuario no encontrado' })
-            } else {
-              res.status(200).send(user)
-            }
-          } else {
-            res.status(206).send({ message: 'Usuario no encontrado' })
-          }
-    }
-    catch(error){
-        console.error(error);
-    }
-};
-
-const cambiarContrasena = async (req, res) => {
-    const { id, password  } = req.body
-    await User.findByIdAndUpdate(id, {
-        password
-    })
-    res.status(200).send(`Se actualizo su contraseña con éxito.`)
-};
-
 const recoverPassword = async (req, res) => {
     try {
       const { email } = req.body;
@@ -181,7 +153,7 @@ const changePassword = async (req, res) => {
         password 
     });
   
-    res.status(200).json('Password changed successfully');
+    res.status(200).json('La contraseña se cambio con éxito.');
     } catch (error) {
       console.log(error);
       if (error.name === 'JsonWebTokenError') {
@@ -194,4 +166,25 @@ const changePassword = async (req, res) => {
     }
 };
 
-module.exports = { crearUser, getUser, deleteUser, patchUser, getUserEspecifico, loginUser, emailUser, cambiarContrasena, recoverPassword, changePassword }
+const changePasswordAdmin = async (req, res) => {
+    try {
+      const { id, password } = req.body;
+  
+    await User.findByIdAndUpdate(id, { 
+        password 
+    });
+  
+    res.status(200).json('La contraseña se cambio con éxito.');
+    } catch (error) {
+      console.log(error);
+      if (error.name === 'JsonWebTokenError') {
+        res.status(400).json({ message: 'El enlace es invalido.' });
+      } else if (error.name === 'TokenExpiredError') {
+        res.status(400).json({ message: 'El enlace expiró' });
+      } else {
+        res.status(500).json({ message: 'Error del servidor' });
+      }
+    }
+};
+
+module.exports = { crearUser, getUser, deleteUser, patchUser, getUserEspecifico, loginUser, recoverPassword, changePassword, changePasswordAdmin }

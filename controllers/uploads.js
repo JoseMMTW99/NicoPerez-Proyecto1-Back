@@ -49,7 +49,6 @@ const uploadFile = (req, res) => {
 };
 
 const getPdfs = async (req, res) => {
-  console.log(req.params.userId);
   try {
     const gfs = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
       bucketName: 'uploads'
