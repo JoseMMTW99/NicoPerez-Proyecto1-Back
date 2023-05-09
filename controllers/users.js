@@ -30,7 +30,7 @@ const getUserEspecifico = async (req, res) => {
     }
 
 const crearUser = async (req, res) => {
-    const { name, surname, email, dni, edificio, piso, puerta, tipo, baulera } = req.body;
+    const { name, surname, email, password, dni, edificio, piso, puerta, tipo, baulera } = req.body;
     const role = 'usuario'
     const date = 'Sin archivo'
     const userExistentes = await User.findOne({"dni": dni})
@@ -44,7 +44,7 @@ const crearUser = async (req, res) => {
             name,
             surname,
             email,
-            password: dni,
+            password,
             dni,
             edificio,
             piso,
