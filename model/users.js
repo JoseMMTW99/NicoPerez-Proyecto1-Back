@@ -11,6 +11,7 @@ const user = new Schema({
     puerta: String,
     tipo: String,
     baulera: String,
+    date: String,
     role: String
 })
 

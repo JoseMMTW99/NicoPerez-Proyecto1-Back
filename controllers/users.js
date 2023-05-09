@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const nodemailer = require("nodemailer");
 require('dotenv').config();
 const claveToken = process.env.CLAVE;
+const moment = require('moment');
 
 const getUser = async (req, res) => {
     try {
@@ -31,6 +32,7 @@ const getUserEspecifico = async (req, res) => {
 const crearUser = async (req, res) => {
     const { name, surname, email, dni, edificio, piso, puerta, tipo, baulera } = req.body;
     const role = 'usuario'
+    const date = 'Sin archivo'
     const userExistentes = await User.findOne({"dni": dni})
     const userExistentesEmail = await User.findOne({"email": email})
     if (userExistentes) {
@@ -49,6 +51,7 @@ const crearUser = async (req, res) => {
             puerta,
             tipo,
             baulera,
+            date,
             role
         })
         await nuevoUser.save()
@@ -66,6 +69,19 @@ const deleteUser = async (req, res) => {
     }
 
 }
+
+const updateDate = async (req, res) => {
+  const { id } = req.body
+  if(id){
+  const date = new Date();
+  await User.findByIdAndUpdate(id, {
+    date: date.toLocaleDateString('es-ES'),
+  })
+  res.status(200).send(`Se actualizo la fecha con éxito.`)
+  } else{
+  res.status(206).send(`No id.`)
+  }
+};
 
 const patchUser = async (req, res) => {
     const { name, surname, email, password, dni, edificio, piso, puerta, tipo, baulera, role } = req.body
@@ -187,4 +203,4 @@ const changePasswordAdmin = async (req, res) => {
     }
 };
 
-module.exports = { crearUser, getUser, deleteUser, patchUser, getUserEspecifico, loginUser, recoverPassword, changePassword, changePasswordAdmin }
+module.exports = { crearUser, getUser, deleteUser, patchUser, getUserEspecifico, loginUser, recoverPassword, changePassword, changePasswordAdmin, updateDate }
