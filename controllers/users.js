@@ -135,7 +135,7 @@ const recoverPassword = async (req, res) => {
                 secure: true,
                 auth: {
                   user: "serpasoportedev@gmail.com",
-                  pass: "krrkxvqwiddhajwm",
+                  pass: "rtobebucsdkzixdr",
                 },
                 tls: {
                     rejectUnauthorized: false
