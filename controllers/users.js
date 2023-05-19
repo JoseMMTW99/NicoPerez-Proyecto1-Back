@@ -33,11 +33,8 @@ const crearUser = async (req, res) => {
     const { name, surname, email, password, dni, edificio, piso, puerta, tipo, baulera } = req.body;
     const role = 'usuario'
     const date = 'Sin archivo'
-    const userExistentes = await User.findOne({"dni": dni})
     const userExistentesEmail = await User.findOne({"email": email})
-    if (userExistentes) {
-        res.status(206).send(`Este documento ya existe.`)
-    } else if (userExistentesEmail){
+    if (userExistentesEmail){
         res.status(206).send(`Este correo electrónico ya esta en uso.`)
     } else {
         const nuevoUser = new User({
