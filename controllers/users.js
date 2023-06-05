@@ -81,19 +81,17 @@ const updateDate = async (req, res) => {
 };
 
 const patchUser = async (req, res) => {
-    const { name, surname, email, password, dni, edificio, piso, puerta, tipo, baulera, role } = req.body
+    const { id, name, surname, email, password, dni, piso, puerta, tipo, baulera } = req.body
     await User.findByIdAndUpdate(id, {
         name,
         surname,
         email,
         password,
         dni,
-        edificio,
         piso,
         puerta,
         tipo,
-        baulera,
-        role
+        baulera
     })
     res.status(200).send(`Se actualizo el usuario con éxito.`)
 };
