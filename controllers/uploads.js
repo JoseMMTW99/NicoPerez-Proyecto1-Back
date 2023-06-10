@@ -90,6 +90,29 @@ const getPdf = async (req, res) => {
       res.set('Content-Disposition', `attachment; filename=${file.filename}`);
       stream.pipe(res);
     } else {
+      res.status(206).json({ message: 'No hay ningún recibo cargado.' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(206).json({ error: 'Failed to get PDFs' });
+  }
+};
+
+const getPdfComprobante = async (req, res) => {
+  try {
+    const gfs = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+      bucketName: 'uploads'
+    });
+
+    const files = await gfs.find({ 'metadata.userId.userId': req.params.userId, 'metadata.userId.tipo': 'comprobante'}).sort({ uploadDate: -1 }).toArray();
+
+    if (files.length > 0) {
+      const file = files[0];
+      const stream = gfs.openDownloadStream(file._id);
+      res.set('Content-Type', file.contentType);
+      res.set('Content-Disposition', `attachment; filename=${file.filename}`);
+      stream.pipe(res);
+    } else {
       res.status(206).json({ message: 'No hay ningún comprobante cargado.' });
     }
   } catch (error) {
@@ -169,4 +192,4 @@ const deleteFile = async (req, res) => {
   }
 };
 
-module.exports = { uploadFile, getPdf, getPdfs, getPdfsEspecifico, deleteFile };
+module.exports = { uploadFile, getPdf, getPdfs, getPdfsEspecifico, deleteFile, getPdfComprobante };

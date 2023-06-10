@@ -49,6 +49,7 @@ const crearUser = async (req, res) => {
             tipo,
             baulera,
             date,
+            dateComprobante: date,
             role
         })
         await nuevoUser.save()
@@ -68,14 +69,20 @@ const deleteUser = async (req, res) => {
 }
 
 const updateDate = async (req, res) => {
-  const { id } = req.body
+  const { id, tipo } = req.body
   if(id){
   const date = new Date();
-  await User.findByIdAndUpdate(id, {
-    date: date.toLocaleDateString('es-ES'),
-  })
-  res.status(200).send(`Se actualizo la fecha con éxito.`)
-  } else{
+  if(tipo === "recibo"){
+    await User.findByIdAndUpdate(id, {
+      date: date.toLocaleDateString('es-ES'),
+    })
+    res.status(200).send(`Se actualizo la fecha con éxito.`)
+  } else {
+    await User.findByIdAndUpdate(id, {
+      dateComprobante: date.toLocaleDateString('es-ES'),
+    })
+    res.status(200).send(`Se actualizo la fecha con éxito.`)
+  }} else{
   res.status(206).send(`No id.`)
   }
 };
