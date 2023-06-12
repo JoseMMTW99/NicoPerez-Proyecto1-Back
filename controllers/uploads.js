@@ -57,14 +57,12 @@ const getPdfsEspecifico = async (req, res) => {
     });
 
     const fileId = new ObjectId(req.params.fileId);
-
     const files = await gfs.find({ '_id': fileId }).sort({ uploadDate: -1 }).toArray();
 
     if (files.length > 0) {
       const file = files[0];
       const stream = gfs.openDownloadStream(file._id);
       res.set('Content-Type', file.contentType);
-      res.set('Content-Disposition', `attachment; filename=${file.filename}`);
       stream.pipe(res);
     } else {
       res.status(206).json({ message: 'No hay ningún comprobante cargado.' });
@@ -87,7 +85,6 @@ const getPdf = async (req, res) => {
       const file = files[0];
       const stream = gfs.openDownloadStream(file._id);
       res.set('Content-Type', file.contentType);
-      res.set('Content-Disposition', `attachment; filename=${file.filename}`);
       stream.pipe(res);
     } else {
       res.status(206).json({ message: 'No hay ningún recibo cargado.' });
@@ -110,7 +107,6 @@ const getPdfComprobante = async (req, res) => {
       const file = files[0];
       const stream = gfs.openDownloadStream(file._id);
       res.set('Content-Type', file.contentType);
-      res.set('Content-Disposition', `attachment; filename=${file.filename}`);
       stream.pipe(res);
     } else {
       res.status(206).json({ message: 'No hay ningún comprobante cargado.' });
